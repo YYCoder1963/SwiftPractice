@@ -1,32 +1,48 @@
 
 import Foundation
 
-struct Date {
-    var year: Int
-    var month: Int
-    var day: Int
-    func test() -> Void {
-        
+typealias Fn = (Int) -> Int
+func getFn() -> Fn {
+    var num = 15
+    func plus(_ i: Int) -> Int {
+        num += i
+        return num
     }
-}
+    return plus
+}//返回的plus和num形成了闭包
 
 
-var date = Date(year: 2019, month: 8, day: 28)
-var date1 = date
-print(Mems.ptr(ofVal: &date))
-print(Mems.ptr(ofVal: &date1))
+var fn = getFn()
+fn(1)
+fn(2)
+
+//
+//struct Date {
+//    var year: Int
+//    var month: Int
+//    var day: Int
+//    func test() -> Void {
+//
+//    }
+//}
+//
+//
+//var date = Date(year: 2019, month: 8, day: 28)
+//var date1 = date
+//print(Mems.ptr(ofVal: &date))
+//print(Mems.ptr(ofVal: &date1))
 
 //print(Mems.memStr(ofVal: &date))
 //print(MemoryLayout<Date>.size)
 //print(MemoryLayout<Date>.stride)
 //print(MemoryLayout<Date>.alignment)
 
-class Location {
-    var x: Int = 1
-    var y: Int = 2
-}
-
-var loc = Location()
+//class Location {
+//    var x: Int = 1
+//    var y: Int = 2
+//}
+//
+//var loc = Location()
 //Argument passed to call that takes no arguments
 //let loc = Location(x:1,y:1)
 
