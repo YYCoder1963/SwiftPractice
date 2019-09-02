@@ -194,11 +194,11 @@ func add(_ num: Int) -> (inout Int) -> Void {
     空合运算符 ?? 使用了 @autoclosure技术
     有@autoclosure，无@autoclosure， 构成了函数重载
  */
-func getFirstPositive(_ v1:Int,_ v2: Int) -> Int {
-    return v1 > 0 ? v1 : v2
-}
-
-getFirstPositive(10, 20)
+//func getFirstPositive(_ v1:Int,_ v2: Int) -> Int {
+//    return v1 > 0 ? v1 : v2
+//}
+//
+//getFirstPositive(10, 20)
 
 //改成函数类型的参数，可以让v2延迟加载
 func getFirstPositive(_ v1:Int, _ v2: () -> Int) -> Int? {
@@ -211,6 +211,6 @@ func getFirstPositive(_ v1: Int,_ v2: @autoclosure () -> Int) -> Int? {
     return v1 > 0 ? v1 : v2()
 }
 
-//getFirstPositive(-2, 11)
+getFirstPositive(-2, 11)
 
 //: [Next](@next)
