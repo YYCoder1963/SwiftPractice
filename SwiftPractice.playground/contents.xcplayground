@@ -14,5 +14,6 @@
         <page name='下标'/>
         <page name='继承'/>
         <page name='初始化'/>
+        <page name='协议'/>
     </pages>
 </playground>
