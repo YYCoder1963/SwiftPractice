@@ -16,5 +16,6 @@
         <page name='初始化'/>
         <page name='协议'/>
         <page name='可选链'/>
+        <page name='错误处理'/>
     </pages>
 </playground>
