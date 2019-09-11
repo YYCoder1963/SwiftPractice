@@ -17,5 +17,6 @@
         <page name='协议'/>
         <page name='可选链'/>
         <page name='错误处理'/>
+        <page name='泛型'/>
     </pages>
 </playground>
