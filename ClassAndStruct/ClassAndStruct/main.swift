@@ -79,7 +79,7 @@ import Foundation
  40 55 00 00 01 00 00 80
  00 00 00 00 00 00 00 00
  */
-var s1 = "0123456789"
+//var s1 = "0123456789"
 
 /*
  s2 viewOfMemory
@@ -88,7 +88,7 @@ var s1 = "0123456789"
  00 00 00 00 00 00 00 00
  00 00 00 00 00 00 00 00
  */
-var s2 = "0123456789abcde"
+//var s2 = "0123456789abcde"
 /*
  s3 viewOfMemory
  10 00 00 00 00 00 00 D0
@@ -96,7 +96,7 @@ var s2 = "0123456789abcde"
  00 00 00 00 00 00 00 00
  00 00 00 00 00 00 00 00
  */
-var s3 = "0123456789abcdef"
+//var s3 = "0123456789abcdef"
 
 //print(Mems.size(ofVal: &s1),Mems.size(ofVal: &s2),Mems.size(ofVal: &s3))
 
@@ -106,7 +106,30 @@ var s3 = "0123456789abcdef"
     数组内存中存储着引用计数、元素数量、数组容量、数组元素等
  */
 
-var arr = [1,2,3,4,5]
-var arr1 = [1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5]
-print(Mems.ptr(ofRef: arr),Mems.ptr(ofRef: arr1))
-print(MemoryLayout.size(ofValue: arr),MemoryLayout.size(ofValue: arr1))
+//var arr = [1,2,3,4,5]
+//var arr1 = [1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5]
+//print(Mems.ptr(ofRef: arr),Mems.ptr(ofRef: arr1))
+//print(MemoryLayout.size(ofValue: arr),MemoryLayout.size(ofValue: arr1))
+
+open class Run {}
+public class Eat {}
+internal struct Dog {}
+fileprivate class Person {}
+
+fileprivate var data1: (Dog, Person)
+private var data2: (Dog, Person)
+
+private class Singer {
+    
+}
+
+
+class BallPlayer: Player {
+    
+}
+
+var player = Player()
+
+//var  singer = Singer()
+
+

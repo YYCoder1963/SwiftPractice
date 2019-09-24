@@ -20,5 +20,6 @@
         <page name='泛型'/>
         <page name='高级运算符'/>
         <page name='扩展'/>
+        <page name='访问控制'/>
     </pages>
 </playground>
