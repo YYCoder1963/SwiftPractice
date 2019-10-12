@@ -166,16 +166,24 @@ var number = 1
 number = plus(&number)
 
 //有访问冲突
-var step = 1
-func increment(_ num: inout Int) {
-    num += step
-}
-increment(&step)
+/*
+ Simultaneous accesses to 0x11976efd8, but modification requires exclusive access.
 
-//解决内存访问冲突
-var copyOfStep = step
-increment(&copyOfStep)
-step = copyOfStep
+ var step = 1
+ func increment(_ num: inout Int) {
+ num += step
+ }
+ increment(&step)
+ 
+ //解决内存访问冲突
+ var copyOfStep = step
+ increment(&copyOfStep)
+ step = copyOfStep
+ 
+ */
+
+
+
 
 
 func balance(_ x: inout Int, _ y: inout Int) {
@@ -184,16 +192,199 @@ func balance(_ x: inout Int, _ y: inout Int) {
     y = sum - x
 }
 
+var num1 = 42, num2 = 10
+balance(&num1, &num2)
+//Inout arguments are not allowed to alias each other
+//balance(&num2, &num2)
+
+
+var tulpe = (health: 10, energy: 20)
+
+//balance(&tulpe.health, &tulpe.energy)
+
+struct Farmer {
+    var name: String
+    var health: Int
+    var energy: Int
+    mutating func shareHealth(with teammate: inout Farmer) {
+        
+        balance(&teammate.health, &health)
+    }
+}
+
+var oscar = Farmer(name: "Oscar", health: 10, energy: 10)
+var maria = Farmer(name: "Maria", health: 3, energy: 3)
+oscar.shareHealth(with: &maria)
+
+//Inout arguments are not allowed to alias each other
+//oscar.shareHealth(with: &oscar)
+
+
+/*
+    如果下面条件满足，则重叠访问结构体的属性是安全的
+    - 只访问实例存储属性，不是计算属性或类属性
+    - 结构体是局部变量而非全局变量
+    - 结构体要么没有被闭包捕获，要么只被非逃逸闭包捕获
+ */
+
+func demo() {
+    var tuple = (health: 10, energy: 20)
+    balance(&tuple.health, &tuple.energy)
+    
+    var holly = Farmer(name: "Holly", health: 1, energy: 1)
+    balance(&holly.health, &holly.energy)
+}
+
+demo()
+
+
+/*  指针
+    Swift中有专门的指针类型，这些都被定性为”Unsafe“（不安全的），常见一下4种类型
+    - UnsafePointer<Pointee> 类似于 const Pointee *
+    - UnsafeMutablePointer<Pointee> 类似于Pointee *
+    - UnsafeRawPointer 类似于 const void *
+    - UnsafeMutableRawPointer 类似于 void *
+ */
+
+var age = 10
+func test11(_ ptr: UnsafeMutablePointer<Int>) {
+    ptr.pointee += 10
+}
+
+func test12(_ ptr: UnsafePointer<Int>) {
+    print(ptr.pointee)
+}
+
+//test11(&age)
+//test12(&age)
+//print(age)
+
+func test13(_ ptr: UnsafeMutableRawPointer) {
+    ptr.storeBytes(of: 20, as: Int.self)
+}
+
+func test14(_ ptr: UnsafeRawPointer) {
+    print(ptr.load(as: Int.self))
+}
+
+test13(&age)
+//test14(&age)
+//print(age)
+
+
+//var arr = NSArray(objects: 1,2,3,4,5)
+//arr.enumerateObjects { (obj, idx, stop) in
+//    print(idx,obj)
+//    if idx == 2 { stop.pointee = true }
+//}
+//
+//print("------------------")
+//
+//for (idx,obj) in arr.enumerated() {
+//    print(idx,obj)
+//    if idx == 2 { break }
+//}
+
+// 获得指向某个变量的指针
+
+var ptr1 = withUnsafeMutablePointer(to: &age) { $0 }
+var ptr2 = withUnsafePointer(to: &age) { $0 }
+
+ptr1.pointee = 22
+//print(ptr2.pointee)
+//print(age)
+
+var ptr3 = withUnsafeMutablePointer(to: &age) { UnsafeMutableRawPointer($0) }
+var ptr4 = withUnsafePointer(to: &age) { UnsafeRawPointer($0) }
+
+ptr3.storeBytes(of: 33, as: Int.self)
+print(ptr4.load(as: Int.self))
+//print(age)
+
+
+//获得指向堆空间实例的指针
+class Dog {}
+var dog = Dog()
+var ptr5 = withUnsafePointer(to: &dog) { UnsafeRawPointer($0) }
+//var heapPtr = UnsafeRawPointer(bitPattern: ptr5.load(as: Unit.self))
+
+
+//创建指针
+var p1 = UnsafeRawPointer(bitPattern: 0x100001234)
+
+var p2 = malloc(16)
+p2?.storeBytes(of: 11, as: Int.self)
+p2?.storeBytes(of: 22, toByteOffset: 8, as: Int.self)
+//print((p2?.load(as: Int.self))!)// 11
+//print((p2?.load(fromByteOffset: 8, as: Int.self))!)// 22
+free(p2)
+
+var p3 = UnsafeMutableRawPointer.allocate(byteCount: 16, alignment: 1)
+p3.storeBytes(of: 11, as: Int.self)
+p3.advanced(by: 8).storeBytes(of: 22, as: Int.self)
+//print(p3.load(as: Int.self)) // 11
+//print(p3.advanced(by: 8).load(as: Int.self)) // 22
+p3.deallocate()
 
 
 
+var p4 = UnsafeMutablePointer<Int>.allocate(capacity: 3)
+p4.initialize(to: 11)
+p4.successor().initialize(to: 22)
+p4.successor().successor().initialize(to: 33)
+
+//print(p4.pointee) // 11
+//print((p4 + 1).pointee) // 22
+//print((p4 + 2).pointee) // 33
+//
+//print(p4[0])// 11
+//print(p4[1])// 22
+//print(p4[2])// 33
+
+p4.deinitialize(count: 3)
+p4.deallocate()
+
+
+class Children {
+    var age: Int
+    var name: String
+    init(age: Int, name: String) {
+        self.age = age
+        self.name = name
+    }
+    deinit {
+        print(name,"deinit")
+    }
+}
+
+
+var p5 = UnsafeMutablePointer<Children>.allocate(capacity: 5)
+p5.initialize(to: Children(age: 10, name: "Lee"))
+(p5 + 1).initialize(to: Children(age: 11, name: "Rose"))
+(p5 + 2).initialize(to: Children.init(age: 12, name: "Lily"))
+//
+p5.deinitialize(count: 3)
+p5.deallocate()
 
 
 
+//指针之间的转换
+var p6 = UnsafeMutableRawPointer.allocate(byteCount: 16, alignment: 1)
+/*
+    assumingMemoryBound<T>(to: T.Type)
+    返回一个T类型的指针指向与原始指针相同的类型
+ */
+p6.assumingMemoryBound(to: Int.self).pointee = 11
+(p6 + 8).assumingMemoryBound(to: Double.self).pointee = 22.0
+/*
+    unsafeBitCast<T, U>(_ x: T, to type: U.Type) -> U
+    将T类型强制转换为U类型并返回U（要求T和U实例有相同的内存大小和布局）
+    但不会因为数据类型的变化而改变原来的内存数据
+ */
+print(unsafeBitCast(p6, to: UnsafePointer<Int>.self).pointee)
+print(unsafeBitCast(p6 + 8, to: UnsafePointer<Double>.self).pointee)
 
-
-
-
+p6.deallocate()
 
 
 
