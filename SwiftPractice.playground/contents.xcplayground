@@ -24,5 +24,7 @@
         <page name='内存管理'/>
         <page name='字面量'/>
         <page name='模式匹配'/>
+        <page name='OC到Swift'/>
+        <page name='map、flatMap、filter等常见操作'/>
     </pages>
 </playground>

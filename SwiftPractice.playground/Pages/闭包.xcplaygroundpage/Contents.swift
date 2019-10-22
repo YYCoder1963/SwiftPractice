@@ -9,14 +9,15 @@ func sum(_ v1: Int,_ v2: Int) -> Int {
     return v1 + v2
 }
 
+
 /*
  闭包表达式
  {
     (参数列表) -> 返回值类型 in
     函数体代码
  }
- //目前版本不支持下列语法
-var fn = {
+
+ var fn = {
     (v1: Int, v2: Int) -> Int in
         return v1 + v2
 }
@@ -27,6 +28,7 @@ var fn = {
 }(10,11)
  
 */
+
 
 /*
     闭包表达式的简写（依次递减）
